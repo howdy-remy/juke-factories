@@ -1,11 +1,8 @@
 'use strict';
 
-juke.factory('PlayerFactory', function($log, $rootScope) {
+juke.factory('PlayerFactory', function ($log, $rootScope) {
   var audio = document.createElement('audio');
-
-
-
-
+  window.a = audio
   var playing = false;
   var currentSong;
   var songList;
@@ -22,30 +19,35 @@ juke.factory('PlayerFactory', function($log, $rootScope) {
     return songList[index];
   }
 
-  return {
+  audio.addEventListener('ended', function () {
+    playerControls.next();
+    $rootScope.$evalAsync();
+  })
+
+  audio.addEventListener('timeupdate', function() {
+    $rootScope.$evalAsync();
+		return playerControls.getProgress()
+  })
+
+  var playerControls = {
     start: function(song, sl) {
       this.pause();
       if (sl) songList = sl
 
       if (song !== currentSong) {
         audio.src = song.audioUrl;
-        audio.load();
+        audio.load()
         currentSong = song
-      }
+      } 
+
       audio.play();
       playing = true;
-
-      audio.addEventListener('ended', function () {
-		    this.next();
-		    $rootScope.$evalAsync(); // likely best, schedules digest if none happening
-		  });
     },
     pause: function() {
       audio.pause();
       playing = false;
     },
     resume: function(song) {
-      // resume current song
       audio.play();
       playing = true;
     },
@@ -65,12 +67,9 @@ juke.factory('PlayerFactory', function($log, $rootScope) {
       this.start(skip(-1))
     },
     getProgress: function() {
-      // console.log(playing)
       if (!currentSong) return 0;
-      audio.addEventListener('timeupdate', function() {
-        $rootScope.$evalAsync();
-      })
       return audio.currentTime / audio.duration;
     }
   }
+  return playerControls;
 });

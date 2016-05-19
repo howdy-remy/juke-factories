@@ -11,23 +11,24 @@
     <script src="/js/album/album.factory.js" defer></script>
     <script src="/js/player/player.controller.js" defer></script>
     <script src="/js/player/player.factory.js" defer></script>
+    <script src="/js/sidebar/sidebar.controller.js" defer></script>
   </head>
   <body ng-app="juke">
     <div id="main" class="container-fluid">
 
       <div class="col-xs-2">
-        <sidebar>
+        <sidebar ng-controller="SidebarCtrl">
           <img src="juke.svg" class="logo">
           <section>
             <h4 class="menu-item active">
-              <a href="#">ALBUMS</a>
+              <a href="#" ng-click='viewAlbums()'>ALBUMS</a>
             </h4>
           </section>
         </sidebar>
       </div>
 
       <div class="col-xs-10">
-        <div class="album" ng-controller="AlbumCtrl" ng-show="true">
+        <div class="album" ng-controller="AlbumCtrl" ng-show='showOneAlbum'>
           <p>
             <h3>{{ album.name }}{{album.duration}}</h3>
             <img ng-src="{{ album.imageUrl }}" class="img-thumbnail">
@@ -55,23 +56,30 @@
             </tbody>
           </table>
         </div>
-        <div ng-controller="AlbumsCtrl" ng-show="false">
+
+
+
+
+        <div ng-controller="AlbumsCtrl" ng-show="true">
           <h3>Albums</h3>
           <div class="row">
             <div class="col-xs-4" ng-repeat="album in albums">
-              <a class="thumbnail" href="#">
+              <a class="thumbnail" href="#" ng-click="showAlbum(album.id)">
                 <img ng-src="http://placeholdit.imgix.net/~text?txtsize=33&txt=ALBUMoneIMAGE&w=300&h=300">
                 <div class="caption">
                   <h5>
                     <span>{{album.name}}</span>
                   </h5>
-                  <small>Number of songs: {{album.songs.length}}</small>
+                  <small>{{album.songs.length}} songs</small>
                 </div>
               </a>
             </div>
           </div>
         </div>
       </div>
+
+
+
 
       <footer>
         <div ng-show="currentSong()" ng-controller="PlayerCtrl">

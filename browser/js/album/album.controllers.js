@@ -42,32 +42,29 @@ juke.controller('AlbumCtrl', function ($scope, $rootScope, $log, StatsFactory, A
     // $rootScope.$broadcast('play', song);
   };
 
-  // incoming events (from Player, toggle, or skip)
-  // $scope.$on('pause', pause);
-  // $scope.$on('play', play);
-  // $scope.$on('next', next);
-  // $scope.$on('prev', prev);
-
-  // functionality
-  // function pause () {
-  //   $scope.playing = false;
-  // }
-  // function play (event, song) {
-  //   $scope.playing = true;
-  //   $scope.currentSong = song;
-  // };
-
 });
 
 juke.controller('AlbumsCtrl', function ($scope, $rootScope, $log, Album) {
-  Album.fetchAll
-  .then(function(albums){
-    $scope.albums = albums.data
-    albums.data.forEach(function(album){
-      Album.fetchOne(album.id-1)
-      .then(function(albumData){
-        album.songs = albumData.songs;
+  $scope.albumShow = true;
+
+  $scope.$on('albumShow', function() {
+    $scope.albumShow = true;
+  })
+
+  $scope.showAlbum = function(id){
+
+    $scope.showOneAlbum = true;
+
+    Album.fetchAll
+    .then(function(albums){
+      $scope.albums = albums.data
+      albums.data.forEach(function(album){
+        Album.fetchOne(id)
+        .then(function(albumData){
+          album.songs = albumData.songs;
+        })
       })
     })
-  })
+  }
+
 })
